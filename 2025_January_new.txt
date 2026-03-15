@@ -1,0 +1,12 @@
+Output File: 
+— C:\dev\py\birthdays\2025_January_new.txt
+
+Birthdays for January: 7
+
+1 - Bryan Adams
+5 - Jonathan Coulton
+16 - Taylor Swift
+16 - Robert Johnson
+21 - Karl Ward
+21 - Darrell Wilson
+25 - Janet Wright

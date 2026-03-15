@@ -1,0 +1,8 @@
+Output File: 
+— C:\dev\py\birthdays\birthdays_new.txt
+
+Birthdays for May: 3
+
+1 - Huey Lewis
+2 - Eric Clapton
+31 - Stevie Wonder
