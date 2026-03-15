@@ -1,7 +1,7 @@
 Output File: 
 — C:\dev\py\birthdays\2025_may_new.txt
 
-Birthdays for May: 3
+May List Count: 3
 
 1 - Huey Lewis
 2 - Eric Clapton

@@ -28,8 +28,10 @@ from pathlib import Path # for os-neutral filename/path handling
 import argparse # to retrieve input filename from command line
 import subprocess # to open text editor with formatted list
 
+
 # NAMED TUPLES
 Entry = namedtuple('Entry', "day month last first")
+
 
 def get_args() -> argparse.Namespace:
     """Exit app with error if filename not specified or doesn't exist.
@@ -71,7 +73,7 @@ def get_birthday_list(filename) -> list:
     return birthdays_raw.strip().split('\n\n\n')
 
 
-def cleanup(entry: str):
+def cleanup_entry(entry: str):
     """Reformat a single birthday entry for the sacrament bulletin
        Input: (str) entry - ('day month\nlast_name first_name')
        returns: (namedtuple) Entry(day, month, first, last)
@@ -83,30 +85,33 @@ def cleanup(entry: str):
     return Entry(day=day, month=mon, first=first_name, last=last_name)
 
 
-def save_formatted_birthday_list(report_file: Path, birthdays: list) -> None:
-    """Save formatted birthday list, with header
-       Input: (Path) report_file, (list) birthdays
+def save_formatted_birthday_list(output_file: Path, birthdays: list) -> None:
+    """generate new file with Header (month, count) and formatted birthday list
+       Input: report_file (Path), birthdays (list)
+       Outputs: document named (report_file): formatted birthday list
        returns: (none)
     """
    
-    with open(report_file, 'w') as f:
+    with open(output_file, 'w') as f:
         list_month = birthdays[0].month # same month for all; use first entry
         count = len(birthdays) # number of entries for header
 
         # print the header (filename, list count, month)
-        f.write(f"Output File: \n— {report_file.absolute()}\n\n")
-        f.write(f"Birthdays for {list_month}: {count}\n\n")
+        f.write(f"Output File: \n— {output_file.absolute()}\n\n")
+        f.write(f"{list_month} List Count: {count}\n\n")
 
-        # print the formatted list, one name/birthday per line
+        # print the formatted list, one birthday/full name per line
         for entry in birthdays:
             f.write(f"{entry.day} - {entry.first} {entry.last}\n")
 
-def show_formatteed_list(report_file: Path) -> None:
+
+def show_formatteed_birthday_list(report_file: Path) -> None:
     """Open formatted birthday list in Notepad
        Input: (Path) report_file
        returns: (none)
     """
     subprocess.run("notepad.exe " + report_file.absolute().name)
+
 
 def main():
     """
@@ -122,11 +127,11 @@ def main():
     birthdays_raw = get_birthday_list(input_file)
     # Second cleanup pass: generates list of Entry (named tuple)
     # list is not sorted, but is in the same (sorted) order as original file
-    birthday_list = [cleanup(entry) for entry in birthdays_raw]
+    birthday_list = [cleanup_entry(entry) for entry in birthdays_raw]
 
     # Save formatted list to file, open in Notepad
     save_formatted_birthday_list(output_file, birthday_list)
-    show_formatteed_list(output_file)
+    show_formatteed_birthday_list(output_file)
 
 
 if __name__ == "__main__":
