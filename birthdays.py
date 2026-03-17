@@ -34,9 +34,10 @@ Entry = namedtuple('Entry', "day month last first")
 
 
 def get_args() -> argparse.Namespace:
-    """Exit app with error if filename not specified or doesn't exist.
-       Input: (str) full or partial path/filename from CLI
-       returns: (Path object) filename
+    """
+       Parse command line for filename (python birthdays.py filename.txt)
+       Input: filename with implicit or explicit path (str from command line)
+       returns: argument(s) (argparse.Namespace object)
     """
     parser = argparse.ArgumentParser(
         description="Generates formatted birthday lists for church bulletin.")
@@ -46,6 +47,12 @@ def get_args() -> argparse.Namespace:
 
 
 def get_input_file(args: argparse.Namespace) -> Path:
+    """
+        Get the filename using the commandline argument
+        Exit with error if filename wasn't specified on CLI or file doesn't exist.
+        Input: argument from get_args()
+        returns: (Path object) filename
+    """
     try:
         filename = Path(args.input_file)
         if not filename.is_file():
@@ -57,26 +64,33 @@ def get_input_file(args: argparse.Namespace) -> Path:
         exit(1) 
 
 
-def set_output_file(filename):
-    """Set output filename to same folder, same name with _new appended
-       Input: (Path object) filename - original filename
-       returns: (Path object) filename - new filename"""
-    return filename.parent / (filename.stem + "_new" + filename.suffix)
-
-
-def get_birthday_list(filename) -> list:
-    """open and format raw birthday list as a list of raw entries
-       Input: (Path object) filename
-       returns: (list) birthdays_raw (['day month\nlast_name first_name',])
+def set_output_file(input_file):
     """
-    birthdays_raw = filename.read_text()
+        Set output filename to same folder, same name with _new appended
+        Input: (Path object) filename - input filename
+        returns: (Path object) filename - output filename
+    """
+    # return output_filename (e.g. input_filename_new.txt)
+    return input_file.parent / (input_file.stem + "_new" + input_file.suffix)
+
+
+def get_birthday_list(input_file) -> list:
+    """
+        open and format raw birthday list as a list of raw entries
+        Input: (Path object) filename
+        returns: (list) birthdays_raw (['day month\nlast_name first_name',])
+    """
+    # read the contents of the input file to a raw text string
+    birthdays_raw = input_file.read_text()
+    # strip leading and trailing whitespace and break into raw string records
     return birthdays_raw.strip().split('\n\n\n')
 
 
 def cleanup_entry(entry: str):
-    """Reformat a single birthday entry for the sacrament bulletin
-       Input: (str) entry - ('day month\nlast_name first_name')
-       returns: (namedtuple) Entry(day, month, first, last)
+    """
+        transform a single birthday entry from raw text to namedtuple
+        Input: (str) entry - ('day month\nlast_name first_name')
+        returns: (namedtuple) Entry(day, month, first, last)
     """
     bday, name = entry.split('\n')
     day, mon = bday.split(' ')
@@ -86,12 +100,12 @@ def cleanup_entry(entry: str):
 
 
 def save_formatted_birthday_list(output_file: Path, birthdays: list) -> None:
-    """generate new file with Header (month, count) and formatted birthday list
-       Input: report_file (Path), birthdays (list)
-       Outputs: document named (report_file): formatted birthday list
-       returns: (none)
     """
-   
+        Output formatted birthday list with summary header (month, count)
+        Input: report_file (Path), birthdays (list)
+        Outputs: document named (report_file): formatted birthday list
+        returns: (none)
+    """   
     with open(output_file, 'w') as f:
         list_month = birthdays[0].month # same month for all; use first entry
         count = len(birthdays) # number of entries for header
@@ -105,17 +119,18 @@ def save_formatted_birthday_list(output_file: Path, birthdays: list) -> None:
             f.write(f"{entry.day} - {entry.first} {entry.last}\n")
 
 
-def show_formatteed_birthday_list(report_file: Path) -> None:
-    """Open formatted birthday list in Notepad
-       Input: (Path) report_file
-       returns: (none)
+def open_formatted_birthday_list(report_file: Path) -> None:
+    """
+        Open formatted birthday list in default text editor (Notepad) 
+        Input: (Path) report_file
+        returns: (none)
     """
     subprocess.run("notepad.exe " + report_file.absolute().name)
 
 
 def main():
     """
-    Generate formatted birthday list and open new file in text editor
+        Generate formatted birthday list and open new file in text editor
     """
     # get the filename from the command line arguments
     args = get_args()
@@ -131,7 +146,7 @@ def main():
 
     # Save formatted list to file, open in Notepad
     save_formatted_birthday_list(output_file, birthday_list)
-    show_formatteed_birthday_list(output_file)
+    open_formatted_birthday_list(output_file)
 
 
 if __name__ == "__main__":
