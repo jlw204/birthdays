@@ -1,7 +1,7 @@
 Output File: 
-— C:\dev\py\birthdays\2025_January_new.txt
+— C:\dev\py\birthdays\data\2025_January_new.txt
 
-Birthdays for January: 7
+January List Count: 7
 
 1 - Bryan Adams
 5 - Jonathan Coulton
