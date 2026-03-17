@@ -54,6 +54,18 @@ collections - for namedtuple (Entry: (day month last first))
 
 ## FUNCTIONS
 
+### get_args
+* Sets up the CLI parser ( description, input file argument)
+* No arguments: shows Usage and exits cleanly (TODO: clean part)
+* 1 argument: returns pathlib object, absolute path/filename
+* Doesn't check if file is valid, just that input is a file
+* filename.absolute() returns ```WindowsPath('c:/dev/py/birthdays/birthdays.txt')```
+* filename.name returns just the filename ```'birthdays.txt')```
+>
+> Input: (None)
+> 
+> Output: pathlib.WindowsPath object (full path/filename) or exit with descriptive error text
+
 ### check_arguments
 * Sets up the CLI parser ( description, input file argument)
 * No arguments: shows Usage and exits cleanly (TODO: clean part)
@@ -78,17 +90,21 @@ collections - for namedtuple (Entry: (day month last first))
 > Output: list object ([record1, record2, etc])
 
 ### cleanup
-* splits a single birthday entry into individual fields
-* returns a named tuple Entry(day, month, first, last)
-> 
->
+* retrieves a single raw record ```"day month\nLast, First"```
+* splits the birthday ("day month") and the name ("Last, First")
+* Splits the birthday into **day** and **month**
+* Splits the name into **Last Name** and **First Name**
+* feeds day, month, last, and first into Entry named tuple
+* returns Entry object with named fields
+
 > Input: entry (str: "day month\nLast_Name, First_name) ("1 Mar\nJones, Tom")
 > 
-> Output: named tuple: Entry(day=day, month=mon, first=first, last=last)
+> Output: (named tuple) Entry(day=day, month=mon, first=first, last=last)
 
 ## save_formatted_birthday_list
-* 
-> Input: filename, birthdays: list
+* takes the source filename (pathlib object) and birthdays (list object of Entry namedtuple)
+* constructs the output filename from the 
+> Input: filename (pathlib object), birthdays: list of namedtuples
 > 
 > Output: list object
 
